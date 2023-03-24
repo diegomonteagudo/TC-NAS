@@ -9,7 +9,7 @@
                "interface_name":"GigabitEthernet1/0",
                "link":1,
 	       "vrf_apply":true,
-               "vrf_id":1
+               "vrf_id":2
             },
             {
                "interface_name":"GigabitEthernet2/0",
