@@ -52,6 +52,7 @@ Configurer eBGP entre PE-CE :
 - Normal BGP sur le CE
 - Normal BGP dans le VRF sur le PE
 Validation routage
+Pour autoriser son propre AS dans l'AS path SUR LE CE METTRE : neighbor ipvoisin allowas-in
 
 #### Partie C : automatiser
 configuration automatique VRF
