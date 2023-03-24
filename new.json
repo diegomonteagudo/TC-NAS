@@ -47,15 +47,7 @@
 		]
         "ospf":
 			{
-				"process_id":1,
-				"vrf":[
-					{
-						"vrf_id":2
-					},
-					{
-						"vrf_id":3
-					}
-				]  
+				"process_id":1
 			}
 			   
       }
