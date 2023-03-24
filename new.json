@@ -34,6 +34,7 @@
 			 "neighbour":112
 		  },
          "IGP_protocol":"ospf",
+	 "vrf_apply":true,
          "vrf":[
 			{
 				"name":"CUSTA",
