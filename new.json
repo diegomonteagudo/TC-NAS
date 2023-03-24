@@ -1,0 +1,59 @@
+{
+   "routers":[
+      {
+         "id":111,
+         "hostname":"PE1",
+         "role":"provider_edge",
+         "interfaces":[
+            {
+               "interface_name":"GigabitEthernet1/0",
+               "link":1,
+               "vrf_id":1
+            },
+            {
+               "interface_name":"GigabitEthernet2/0",
+               "link":3,
+               "vrf_id":3
+            },
+            {
+               "interface_name":"GigabitEthernet0/0",
+               "link":11
+            },
+            {
+               "interface_name":"Loopback0",
+               "link":111
+            }
+         ],
+         "bgp":{
+			 "bgp_apply":true,
+			 "AS_number":200,
+			 "neighbour":112
+		  },
+         "IGP_protocol":"ospf",
+         "vrf":[
+			{
+				"name":"CUSTA",
+				"id": 2
+			},
+			{
+				"name":"CUSTB",
+				"id": 3
+			}	
+		]
+        "ospf":
+			{
+				"process_id":1,
+				"vrf":[
+					{
+						"vrf_id":2
+					},
+					{
+						"vrf_id":3
+					}
+				]  
+			}
+			   
+      }
+    ]
+ }
+      
