@@ -8,24 +8,24 @@
             {
                "interface_name":"GigabitEthernet1/0",
                "link":1,
-	       "vrf_apply":True,
+	       "vrf_apply":true,
                "vrf_id":1
             },
             {
                "interface_name":"GigabitEthernet2/0",
                "link":3,
-	       "vrf_apply":True,
+	       "vrf_apply":true,
                "vrf_id":3
             },
             {
                "interface_name":"GigabitEthernet0/0",
                "link":11,
-	       "vrf_apply":False
+	       "vrf_apply":false
             },
             {
                "interface_name":"Loopback0",
                "link":111,
-	       "vrf_apply":False
+	       "vrf_apply":false
             }
          ],
          "bgp":{
