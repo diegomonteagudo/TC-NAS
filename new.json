@@ -34,7 +34,10 @@
          "bgp":{
 			 "bgp_apply":true,
 			 "AS_number":200,
-			 "neighbour":112
+			 "neighbour":{
+			 	"id":112,
+				"vpn_apply":true
+			 }
 		  },
          "IGP_protocol":"ospf",
 	 "vrf_apply":true,
