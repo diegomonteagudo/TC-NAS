@@ -1,0 +1,130 @@
+-------------------------------------------
+|                                         |
+|             COMPRÉHENSION               |
+|                                         |
+-------------------------------------------
+
+Phase 3b =
+● Configure eBGP as the PE-CE routing protocol
+  ○ Normal BGP config on the CE
+  ○ Normal BGP config in the VRF of the PE
+● Make some networks attached to the CE routable through your platform
+● Validate routing
+  ○ (routes appear at the right place, no leaking among customers)
+● Validate forwarding
+
+=> rajout de BGP
+
+-------------------------------------------
+|                                         |
+|                   ROUTEUR               |
+|                     PAR                 |
+|                   ROUTEUR (changement)  |
+|                                         |
+-------------------------------------------
+
+------- ROUTEUR PE1 ---------
+
+-----------------------------
+
+
+
+
+------- ROUTEUR PE2 ---------
+
+-----------------------------
+
+
+
+------- ROUTEUR CE1 ---------
+conf ter
+interface GigabitEthernet 0/0
+ip address 192.168.1.2 255.255.255.0
+no shutdown
+exit
+
+interface loopback 0
+ip address 1.1.1.1 255.255.255.255
+no shutdown
+exit
+
+router bgp 8002
+bgp router-id
+A FFAIRE
+-----------------------------
+
+------- ROUTEUR CE2 ---------
+
+-----------------------------
+
+------- ROUTEUR CE3 ---------
+
+-----------------------------
+
+------- ROUTEUR CE4 ---------
+
+-----------------------------
+
+
+-------------------------------------------
+|                                         |
+|                   ROUTEUR               |
+|                     PAR                 |
+|                   ROUTEUR (identique)   |
+|                                         |
+-------------------------------------------
+
+
+------- ROUTEUR P1 --------- Aucun changement phase 2b
+conf ter
+router ospf 11
+router-id 11.11.11.11
+exit
+
+interface GigabitEthernet 0/0
+ip address 10.10.10.2 255.255.255.252
+no shutdown
+ip ospf 11 area 0
+mpls ip
+exit
+
+interface GigabitEthernet 1/0
+ip address 10.10.10.5 255.255.255.252
+no shutdown
+ip ospf 11 area 0
+mpls ip
+exit
+
+interface loopback 0
+ip address 11.11.11.11 255.255.255.255
+no shutdown
+ip ospf 11 area 0
+exit
+-----------------
+
+------- ROUTEUR P2 --------- Aucun changement phase 2b
+conf ter
+router ospf 22
+router-id 22.22.22.22
+exit
+
+interface GigabitEthernet 0/0
+ip address 10.10.10.9 255.255.255.252
+no shutdown
+ip ospf 22 area 0
+mpls ip
+exit
+
+interface GigabitEthernet 1/0
+ip address 10.10.10.6 255.255.255.252
+no shutdown
+ip ospf 22 area 0
+mpls ip
+exit
+
+interface loopback 0
+ip address 22.22.22.22 255.255.255.255
+no shutdown
+ip ospf 22 area 0
+exit
+-------------------
