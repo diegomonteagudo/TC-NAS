@@ -47,6 +47,7 @@
 		]
         "ospf":
 			{
+				"ospf_apply":true,
 				"process_id":1
 			}
 			   
