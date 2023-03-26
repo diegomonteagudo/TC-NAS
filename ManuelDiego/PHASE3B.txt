@@ -48,20 +48,87 @@ ip address 1.1.1.1 255.255.255.255
 no shutdown
 exit
 
-router bgp 8002
-bgp router-id
-A FFAIRE
+router bgp 8101
+bgp router-id 1.1.1.1
+neighbor 111.111.111.111 remote-as 8001
+neighbor 111.111.111.111 update-source loopback 0
+address-family vpnv4
+neighbor 111.111.111.111 activate
+neighbor 111.111.111.111 send-community both
+exit
+exit
+
 -----------------------------
 
 ------- ROUTEUR CE2 ---------
+conf ter
+interface GigabitEthernet 0/0
+ip address 192.168.2.2 255.255.255.0
+no shutdown
+exit
+
+interface loopback 0
+ip address 2.2.2.2 255.255.255.255
+no shutdown
+exit
+
+router bgp 8102
+bgp router-id 2.2.2.2
+neighbor 222.222.222.222 remote-as 8001
+neighbor 222.222.222.222 update-source loopback 0
+address-family vpnv4
+neighbor 222.222.222.222 activate
+neighbor 222.222.222.222 send-community both
+exit
+exit
 
 -----------------------------
 
 ------- ROUTEUR CE3 ---------
+conf ter
+interface GigabitEthernet 0/0
+ip address 192.168.3.2 255.255.255.0
+no shutdown
+exit
+
+interface loopback 0
+ip address 3.3.3.3 255.255.255.255
+no shutdown
+exit
+
+router bgp 8103
+bgp router-id 3.3.3.3
+neighbor 111.111.111.111 remote-as 8001
+neighbor 111.111.111.111 update-source loopback 0
+address-family vpnv4
+neighbor 111.111.111.111 activate
+neighbor 111.111.111.111 send-community both
+exit
+exit
 
 -----------------------------
 
 ------- ROUTEUR CE4 ---------
+conf ter
+interface GigabitEthernet 0/0
+ip address 192.168.4.2 255.255.255.0
+no shutdown
+exit
+
+interface loopback 0
+ip address 4.4.4.4 255.255.255.255
+no shutdown
+exit
+
+router bgp 8104
+bgp router-id 4.4.4.4
+neighbor 222.222.222.222 remote-as 8001
+neighbor 222.222.222.222 update-source loopback 0
+address-family vpnv4
+neighbor 222.222.222.222 activate
+neighbor 222.222.222.222 send-community both
+exit
+exit
 
 -----------------------------
 
