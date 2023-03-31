@@ -65,11 +65,11 @@ def write_file() :
                 script+=" negotiation auto\n"
                     
             elif r['id']>100 and x['link']>10 and x['link']<20 : #PE connect with P
-                script+=" ip address 10.10."+str(x['link'])+".1 255.255.255.252\n"
+                script+=" ip address 10.10."+str(r['id'])+".1 255.255.255.252\n"
                 script+=" negotiation auto\n"
                 script+=" mpls ip\n"
             elif x['link']>100 and r['id']>10 and r['id']<20 : #P connect with PE
-                script+=" ip address 10.10."+str(r['id'])+".2 255.255.255.252\n"
+                script+=" ip address 10.10."+str(x['link'])+".2 255.255.255.252\n"
                 script+=" negotiation auto\n"
                 script+=" mpls ip\n"
             elif x['link']>10 and x['link']<20 and r['id']>10 and r['id']<20 : #P connect with P
@@ -101,20 +101,23 @@ def write_file() :
         
         for x in r['interfaces']:
             if x['ospf_apply']!=0:
-                if r['id']>100 and x['link']==r['id']: #loopback
-                    script+=" network "+str(r['id'])+"."+str(r['id'])+"."+str(r['id'])+".0 0.0.0.255 area 0\n"
+                if x['link']==r['id']: #loopback
+                    script+=" network "+str(r['id'])+"."+str(r['id'])+"."+str(r['id'])+"."+str(r['id'])+" 0.0.0.0 area 0\n"
                     
                 elif r['id']>100 and x['link']>10 and x['link']<20 : #PE connect with P
-                    script+=" network 10.10."+str(x['link'])+".0 0.0.0.3\n"
+                    script+=" network 10.10."+str(r['id'])+".0 0.0.0.3 area 0\n"
                     
                 elif x['link']>100 and r['id']>10 and r['id']<20 : #P connect with PE
-                    script+=" network 10.10."+str(r['id'])+".0 0.0.0.3\n"
-                    
+                    script+=" network 10.10."+str(x['link'])+".0 0.0.0.3 area 0\n"
+                
+                elif x['link']>100 and r['id']<10 : #CE connect with PE
+                    script+=" network 192.168."+str(r['id'])+".0 0.0.0.255 area 0\n"
+                
                 elif x['link']>10 and x['link']<20 and r['id']>10 and r['id']<20 : #P connect with P
                     if x['link']<r['id']:
-                        script+= " network 10.10."+str(x['link'])+".0 0.0.0.3\n"
+                        script+= " network 10.10."+str(x['link'])+".0 0.0.0.3 area 0\n"
                     else:
-                        script+=" network 10.10."+str(r['id'])+".0 0.0.0.3\n"
+                        script+=" network 10.10."+str(r['id'])+".0 0.0.0.3 area 0\n"
                     
         script+="!\n"
         
@@ -149,23 +152,23 @@ def write_file() :
             script+=" exit-address-family\n"
            
 
-        script+="!\n"
-        script+="ip forward-protocol nd\n!\n!\n"
-        script+="no ip http server\n"
-        script+="no ip http secure-server\n!\n"
-        script+="!\n!\n!\n!\ncontrol-plane\n!\n!\n"
-        script+="line con 0\n"
-        script+=" exec-timeout 0 0\n"
-        script+=" privilege level 15\n"
-        script+=" logging synchronous\n"
-        script+=" stopbits 1\n"
-        script+="line aux 0\n"
-        script+=" exec-timeout 0 0\n"
-        script+=" privilege level 15\n"
-        script+=" logging synchronous\n"
-        script+=" stopbits 1\n"
-        script+="line vty 0 4\n"
-        script+=" login\n!\n!\nend"
+    script+="!\n"
+    script+="ip forward-protocol nd\n!\n!\n"
+    script+="no ip http server\n"
+    script+="no ip http secure-server\n!\n"
+    script+="!\n!\n!\n!\ncontrol-plane\n!\n!\n"
+    script+="line con 0\n"
+    script+=" exec-timeout 0 0\n"
+    script+=" privilege level 15\n"
+    script+=" logging synchronous\n"
+    script+=" stopbits 1\n"
+    script+="line aux 0\n"
+    script+=" exec-timeout 0 0\n"
+    script+=" privilege level 15\n"
+    script+=" logging synchronous\n"
+    script+=" stopbits 1\n"
+    script+="line vty 0 4\n"
+    script+=" login\n!\n!\nend"
     return script		
 			
 for r in json_object['routers'] :
