@@ -13,7 +13,7 @@ Phase 3b =
   ○ (routes appear at the right place, no leaking among customers)
 ● Validate forwarding
 
-=> rajout de BGP
+=> rajout de BGP PE-CE
 
 -------------------------------------------
 |                                         |
@@ -24,6 +24,74 @@ Phase 3b =
 -------------------------------------------
 
 ------- ROUTEUR PE1 ---------
+conf ter
+router ospf 111
+router-id 111.111.111.111
+exit
+
+ip vrf custA
+rd 8001:777
+route-target import 8001:1
+route-target export 8001:1
+exit
+
+ip vrf custB
+rd 8001:778
+route-target import 8001:2
+route-target export 8001:2
+exit
+
+interface GigabitEthernet 0/0
+ip address 10.10.10.1 255.255.255.252
+no shutdown
+ip ospf 111 area 0
+mpls ip
+exit
+
+interface GigabitEthernet 1/0
+ip vrf forwarding custA
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+
+interface GigabitEthernet 2/0
+ip vrf forwarding custA
+ip address 192.168.3.1 255.255.255.0
+no shutdown
+exit
+
+interface loopback 0
+ip address 111.111.111.111 255.255.255.255
+no shutdown
+ip ospf 111 area 0
+exit
+
+router bgp 8001
+bgp router-id 111.111.111.111
+neighbor 222.222.222.222 remote-as 8001
+neighbor 222.222.222.222 update-source loopback 0
+address-family vpnv4
+neighbor 222.222.222.222 activate
+neighbor 222.222.222.222 send-community both
+exit
+address-family ipv4 vrf custA
+bgp router-id 111.111.111.111
+redistribute connected
+network 192.168.1.0
+neighbor 192.168.1.2 remote-as 8101
+neighbor 192.168.1.2 activate
+neighbor 192.168.1.2 allowas-in 1
+exit
+address-family ipv4 vrf custB
+bgp router-id 111.111.111.111
+redistribute connected
+network 192.168.3.0
+neighbor 192.168.3.2 remote-as 8103
+neighbor 192.168.3.2 activate
+neighbor 192.168.3.2 allowas-in 1
+exit
+exit
+
 
 -----------------------------
 
@@ -31,6 +99,74 @@ Phase 3b =
 
 
 ------- ROUTEUR PE2 ---------
+conf ter
+router ospf 222
+router-id 222.222.222.222
+exit
+
+ip vrf custA
+rd 8001:779
+route-target import 8001:1
+route-target export 8001:1
+exit
+
+ip vrf custB
+rd 8001:780
+route-target import 8001:2
+route-target export 8001:2
+exit
+
+interface GigabitEthernet 0/0
+ip address 10.10.10.10 255.255.255.252
+no shutdown
+ip ospf 222 area 0
+mpls ip
+exit
+
+interface GigabitEthernet 1/0
+ip vrf forwarding custA
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+
+interface GigabitEthernet 2/0
+ip vrf forwarding custB
+ip address 192.168.4.1 255.255.255.0
+no shutdown
+exit
+
+interface loopback 0
+ip address 222.222.222.222 255.255.255.255
+no shutdown
+ip ospf 222 area 0
+exit
+
+router bgp 8001
+bgp router-id 222.222.222.222
+neighbor 111.111.111.111 remote-as 8001
+neighbor 111.111.111.111 update-source loopback 0
+address-family vpnv4
+neighbor 111.111.111.111 activate
+neighbor 111.111.111.111 send-community both
+exit
+address-family ipv4 vrf custA
+bgp router-id 222.222.222.222
+redistribute connected
+network 192.168.2.0
+neighbor 192.168.2.2 remote-as 8102
+neighbor 192.168.2.2 activate
+neighbor 192.168.2.2 allowas-in 1
+exit
+address-family ipv4 vrf custB
+bgp router-id 222.222.222.222
+redistribute connected
+network 192.168.4.0
+neighbor 192.168.4.2 remote-as 8104
+neighbor 192.168.4.2 activate
+neighbor 192.168.4.2 allowas-in 1
+exit
+exit
+
 
 -----------------------------
 
