@@ -42,7 +42,7 @@ def new_json_config():
             status_update("Config successfully produced. Ready to be moved to the GNS3 project.")
             last_button_pressed = "Produce"
         except Exception as e:
-            status_update("PYTHON ERROR:",e)
+            status_update(str("PYTHON ERROR:",e))
 
 def move_to_gns3():
     if last_button_pressed == "Move" or last_button_pressed == "Update":
