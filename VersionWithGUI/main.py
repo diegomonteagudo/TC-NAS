@@ -12,14 +12,14 @@ last_button_pressed = "None" #None, Produce, Move or Update
 last_config_dict = {}
 
 def open_json():
-    filename = filedialog.askopenfilename(initialdir="/", title="Select the json file")
+    filename = filedialog.askopenfilename(initialdir=program_path, title="Select the json file")
     json_path_box.delete("1.0", tk.END)
     json_path_box.insert(tk.END, filename)
     global json_path
     json_path = filename
 
 def open_gns3():
-    filename = filedialog.askopenfilename(initialdir="/", title="Select the existing .gns3 project")
+    filename = filedialog.askopenfilename(initialdir=program_path, title="Select the existing .gns3 project")
     gns3_path_box.delete("1.0", tk.END)
     gns3_path_box.insert(tk.END, filename)
     global gns3_path
@@ -40,6 +40,7 @@ def new_json_config():
         try:
             config.produce(program_path, json_path)
             status_update("Config successfully produced. Ready to be moved to the GNS3 project.")
+            global last_button_pressed
             last_button_pressed = "Produce"
         except Exception as e:
             status_update(str("PYTHON ERROR:",e))
@@ -55,6 +56,8 @@ def move_to_gns3():
         correspondances = move.correspondance_hostname_nodeid(gns3_path)
         move.new_dynamips(correspondances, program_path, gns3_path)
         status_update("Config successfully moved to the GNS3 project. Please restart all routers.")
+    else:
+    	status_update("Erreur variable bouton")
 
 
 def update():
