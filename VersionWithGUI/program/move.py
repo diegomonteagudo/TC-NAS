@@ -1,8 +1,22 @@
 import os
 import shutil
 import json
+from difflib import Differ
 
-#path+"/project-files/dynamips"
+
+def difference_significative(path1, path2):
+    non_significatif = ["", " ", "!", " !","! "]
+    with open(path1) as file1, open(path2) as file2:
+        lines1 = file1.readlines()
+        lines2 = file2.readlines()
+
+        differ = Differ()
+        for line in differ.compare(lines1, lines2):
+            if (line[0] == "+") or (line[0] == "-"):
+                line = line[2:].rstrip("\n")
+                if line not in non_significatif:
+                    return True
+        return False
 
 def containing_folder(file_path):
     taille = len(file_path)
@@ -32,6 +46,7 @@ def correspondance_hostname_nodeid(path_gns3):
 
 
 def new_dynamips(correspondances, program_path, gns3_path):
+    need_restart_routers, total_router_number = [], 0 # sera retourné
     config_files_names = os.listdir(program_path+"/config_results")
     if len(correspondances) != len(config_files_names):
         print("WARNING: differences between .gns3 routers and produced routers")
@@ -39,21 +54,23 @@ def new_dynamips(correspondances, program_path, gns3_path):
     for filename in config_files_names:
         if ".cfg" in filename:
             hostname = filename[:len(filename)-4]
-            router_config_path = containing_folder(gns3_path)+"/project-files/dynamips/"
-            router_config_path += correspondances[hostname][0]+"/configs/"
+            produced_path = program_path+"/config_results/" + hostname+".cfg"
+            dyn_folder = containing_folder(gns3_path)+"/project-files/dynamips/"
+            dyn_folder += correspondances[hostname][0]+"/configs/"
+            dyn_filename = "i"+str(correspondances[hostname][1])+"_startup-config.cfg"
+            dyn_path = dyn_folder + dyn_filename
 
-            # # find the matching iXX_ number USELESS NOW
-            # files_config_existante = os.listdir(router_config_path)
-            # new_name_path = ""
-            # print("Routeur: ",hostname)
-            # print(files_config_existante)
-            # print("/\ c'est ce que j'ai trouvé dans :", router_config_path)
-            # for filename in files_config_existante:
-            #     if "startup-config" in filename:
-            #         new_name_path = router_config_path + filename
-            #         os.remove(router_config_path+filename)
-            new_name_path = router_config_path + "i"+str(correspondances[hostname][1])+"_startup-config.cfg"
+            try:
+                #si fichier dyn existant différent de produced
+                if difference_significative(produced_path, dyn_path): 
+                    shutil.copy(produced_path, dyn_path)
+                    need_restart_routers.append(hostname)
+                    if hostname == "CE2":
+                        print(produced_path,dyn_path)
+            except FileNotFoundError: # si le fichier dans dyn n'existe même pas
+                pass
 
-            shutil.copy(program_path+"/config_results/" + hostname+".cfg", new_name_path)
-
+            total_router_number += 1
+    
+    return need_restart_routers, total_router_number
 

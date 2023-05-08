@@ -32,8 +32,8 @@ def status_update(message):
     status_box.see("end")
 
 def new_json_config():
-    if json_path == "":
-        status_update("ERROR: Please indicate a .json network intent file")
+    if json_path == "" or not isinstance(json_path, str):
+        status_update("ERROR: Please indicate a valid .json network intent file")
     else:
         if gns3_path == "":
             status_update("WARNING: No GNS3 project provided. Only config files production will be possible.")
@@ -54,8 +54,21 @@ def move_to_gns3():
         status_update("ERROR: The GNS3 project file has not been specified, or is not valid.")
     elif last_button_pressed == "Produce":
         correspondances = move.correspondance_hostname_nodeid(gns3_path)
-        move.new_dynamips(correspondances, program_path, gns3_path)
-        status_update("Config successfully moved to the GNS3 project. Please restart all routers.")
+        need_restart_routers, total_router_number = move.new_dynamips(correspondances, program_path, gns3_path)
+        #status_update("Config successfully moved to the GNS3 project. Please restart all routers.")
+        if len(need_restart_routers) == 0:
+            status_update("The GNS3 config is already up to date. Nothing was moved.")
+        elif len(need_restart_routers) == total_router_number:
+            status_update("Config successfully moved to the GNS3 project. Please restart all routers.")
+        else:
+            message = "Config successfully moved to the GNS3 project. Please restart the following router :\n"
+            for name in need_restart_routers:
+                message += name
+                if need_restart_routers[-1] != name:
+                    message += ", "
+            status_update(message)
+
+
     else:
     	status_update("Erreur variable bouton")
 
